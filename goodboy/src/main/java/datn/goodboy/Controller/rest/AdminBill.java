@@ -51,6 +51,7 @@ public class AdminBill {
     @PostMapping("/update")
     public ResponseEntity<?> updateBill(@RequestBody BillRequest billRequest){
             try{
+                System.out.println(billRequest.getPhone());
                 billService.updateBill(billRequest);
                 return ResponseEntity.ok("succ");
             }catch(Exception e) {

@@ -41,7 +41,7 @@ public class BillController {
         }catch (Exception e){
             e.printStackTrace();
         }
-        return "/admin/pages/bill/bill-detail";
+        return "/admin/pages/bill/bill2";
     }
 
     @GetMapping("/bill-detail-update-status")

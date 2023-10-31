@@ -102,8 +102,8 @@ public class BillService {
         Bill billSys = billRepository.findByCode(bill.getCode())
                 .orElseThrow(() -> new Exception("Not found"));
         billSys.setAddress(bill.getAddress());
-        System.out.println(bill.getAddress());
         billSys.setPhone(bill.getPhone());
+        System.out.println(billSys.getPhone());
         billRepository.save(billSys);
     }
 

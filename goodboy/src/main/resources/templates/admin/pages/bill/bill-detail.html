@@ -6,8 +6,8 @@
     <title>Bill Detail</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
 </head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <style>
     * {
         padding: 0;
@@ -101,7 +101,7 @@
                 </div>
             </div>
             <hr>
-            <div class="bottom d-flex justify-content-between">
+            <div style="display: none" class="bottom justify-content-between">
                 <div class="lf">
                     <a href="">
                         <button class="btn btn-primary">Xác Nhận</button>
@@ -120,7 +120,7 @@
         <div class="info mt-2 p-4" style="box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;">
             <div class="top d-flex justify-content-between">
                 <h2>THÔNG TIN ĐƠN HÀNG</h2>
-                <button class="btn btn-primary">Update</button>
+                <button onclick="update()" class="btn btn-primary">Update</button>
             </div>
             <hr>
             <div class="info-order">
@@ -128,7 +128,7 @@
                     <div class="col-6 lf">
                         <div class="item code">
                             <label>Mã Đơn Hàng</label>
-                            <span th:text="${bill.code}" style="background-color: rgb(206, 240, 240);"></span>
+                            <span id="code" th:text="${bill.code}" style="background-color: rgb(206, 240, 240);"></span>
                         </div>
                         <div class="item type">
                             <label>Loại Đơn Hàng</label>
@@ -157,7 +157,7 @@
                         </div>
                         <div class="item phone">
                             <label>Số Điện Thoại</label>
-                            <input style="border: none; outline: none;color: red" th:value="${bill.customer.phone}" />
+                            <input id="phoneNumber" style="border: none; outline: none;color: red" th:value="${bill.phone}" />
 <!--                            <span th:text="${bill.customer.phone}" >+00000</span>-->
                         </div>
                         <div class="item email">
@@ -166,7 +166,7 @@
                         </div>
                         <div class="item address">
                             <label>Địa Chỉ</label>
-                            <input style="border: none; outline: none; color: red" th:value="${bill.address}" />
+                            <input id="address" style="border: none; outline: none; color: red" th:value="${bill.address}" />
                         </div>
                         <div class="item note">
                             <label>Ghi Chú</label>
@@ -231,7 +231,47 @@
     line.style.left = tabSelector.offsetLeft + "px";
     line.style.width = tabSelector.offsetWidth + "px";
 
+    function update(){
+        let phoneNumber =document.querySelector('#phoneNumber');
+        let address = document.querySelector('#address');
+        let code=   document.querySelector('#code');
+        if(!phoneNumber.value && !address.value){
+            alert('Vui lòng nhập đầy đủ thông tin địa chỉ hoặc số điện thoại!')
+            return;
+        }
 
+        var phoneRegex = /^[0-9]{10}$/;
+        if (!phoneRegex.test(phoneNumber.value)) {
+            alert("Số điện thoại không hợp lệ!");
+            return;
+        }
+        let dataForm ={
+            phone : phoneNumber.value,
+            address : address.value,
+            code : code.innerText,
+        }
+        console.log(dataForm);
 
+        fetch("/admin/bill/update", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(dataForm)
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert("Cập nhật thành công!");
+                } else {
+                    throw new Error("Cập nhật thất bại!");
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                console.log(error);
+                alert("Cập nhật thất bại!");
+                location.reload();
+            });
+    }
 </script>
 </html>
